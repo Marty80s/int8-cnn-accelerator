@@ -1,0 +1,2 @@
+PASS: operand memory, 526 cycle checks
+Simulation complete via $finish(1) at time 5266 NS + 0

@@ -16,3 +16,9 @@ mkdir -p runs/configurable_k
 cd runs/configurable_k
 xrun -64bit -sv ../../rtl/mac_int8.sv ../../rtl/mac_array_4x4.sv ../../rtl/matmul_4x4_k.sv ../../tb/tb_matmul_4x4_k.sv -top tb_matmul_4x4_k -l configurable_k_sim.log
 cd ../..
+
+# Standalone operand memory
+mkdir -p runs/memory
+cd runs/memory
+xrun -64bit -sv ../../rtl/operand_memory.sv ../../tb/tb_operand_memory.sv -top tb_operand_memory -l memory_sim.log
+cd ../..
