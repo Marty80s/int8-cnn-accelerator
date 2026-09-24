@@ -1,0 +1,10 @@
+Loaded address 0: 00000001fbff0501
+Loaded address 1: 00000100fafe0602
+Loaded address 2: 00010000f9fd0703
+Loaded address 3: 01000000f8fc0804
+Result row 0: 1 2 3 4
+Result row 1: 5 6 7 8
+Result row 2: -1 -2 -3 -4
+Result row 3: -5 -6 -7 -8
+PASS: accel_top identity test, 16 result checks
+Simulation complete via $finish(1) at time 266 NS + 0
