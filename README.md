@@ -12,12 +12,15 @@ The current design is a **4x4 broadcast, output-stationary matrix-multiplication
 | Controlled compute engine | 23 completed jobs; controller checks passed |
 | Configurable-K engine | 11 completed jobs; 18,752 output checks passed |
 | Standalone operand memory | 526 cycle checks passed |
+| Reader with operand memory | 5 completed jobs; 267 delivered words passed |
 
 The first three results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. The six original source files were imported unchanged on September 24, 2026. See [baseline provenance and hashes](reports/00-baseline-import.md). Simulations were not rerun during import.
 
 The configurable-K result comes from the uploaded September 23, 2026 Xcelium log. See [the configurable-K report](reports/04-configurable-k.md) for the contract, coverage, provenance, and limitations. No simulations were rerun during this import.
 
 A standalone 256x64-bit synchronous operand memory has also passed directed simulation in the uploaded September 23, 2026 Xcelium log. See [the memory report](reports/05-operand-memory.md). It is not yet connected to the compute engine.
+
+The reader has now passed tests with the operand memory, including consumer pauses and reset recovery. See [the reader report](reports/06-operand-reader.md). Connection to the matrix engine is still pending.
 
 No synthesis area, post-route frequency, power, FPGA speedup, or CNN accuracy is claimed yet.
 
@@ -41,7 +44,7 @@ Load the university-supported Cadence environment first. See scripts/run_command
 ## Planned work
 1. Preserve the verified baseline (source import complete).
 2. Generalize accumulation length K (implemented; directed simulation passed).
-3. Integrate synchronous operand memory and a reader (standalone memory tested; integration pending).
+3. Integrate synchronous operand memory and a reader (memory and reader tested together; compute integration pending).
 4. Add convolution scheduling and integer postprocessing.
 5. Validate a small CNN against an independent integer reference.
 6. Synthesize, implement, and analyze the design in Cadence.

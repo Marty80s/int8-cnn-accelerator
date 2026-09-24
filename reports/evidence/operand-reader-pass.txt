@@ -1,0 +1,7 @@
+PASS reader job 1: K=1 stalls=0
+PASS reader job 2: K=3 stalls=1
+PASS reader job 3: K=4 stalls=0
+PASS reader job 4: K=255 stalls=1
+PASS reader job 5: K=4 stalls=1
+PASS: operand reader, 5 completed jobs, 267 delivered words
+Simulation complete via $finish(1) at time 16186 NS + 0

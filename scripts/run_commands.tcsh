@@ -22,3 +22,9 @@ mkdir -p runs/memory
 cd runs/memory
 xrun -64bit -sv ../../rtl/operand_memory.sv ../../tb/tb_operand_memory.sv -top tb_operand_memory -l memory_sim.log
 cd ../..
+
+# Operand reader with memory
+mkdir -p runs/reader
+cd runs/reader
+xrun -64bit -sv ../../rtl/operand_memory.sv ../../rtl/operand_reader.sv ../../tb/tb_operand_reader.sv -top tb_operand_reader -l reader_sim.log
+cd ../..
