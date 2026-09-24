@@ -1,1 +1,49 @@
-# int8-cnn-accelerator
+# INT8 CNN Accelerator
+
+SystemVerilog compute engine progressing toward CNN inference and ASIC physical implementation. No FPGA board or fabricated silicon is required by this project.
+
+## Current status
+The current design is a **4x4 broadcast, output-stationary matrix-multiplication engine**, not yet a complete CNN accelerator. It uses 16 signed INT8 MACs, 32-bit accumulators, and a controller accepting exactly four operand sets per job.
+
+| Milestone | Recorded result |
+|---|---|
+| Single MAC | 132,084 checks passed |
+| MAC array | 103 matrix tests; 1,648 final output comparisons passed |
+| Controlled compute engine | 23 completed jobs; controller checks passed |
+
+These results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. This documentation package has not rerun the simulations. The exact remote source files must be imported and committed before tagging a reproducible baseline.
+
+No synthesis area, post-route frequency, power, FPGA speedup, or CNN accuracy is claimed yet.
+
+## Architecture
+At each accepted step k, the array receives A[0:3][k] and B[k][0:3]. Each MAC updates C[i][j] with A[i][k]*B[k][j]. All 16 partial sums stay in their own registers.
+
+The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is accepted on a rising edge when in_valid && in_ready. The fourth accepted set completes the job and asserts done for one clock. Input gaps stall computation. start must be pulsed while idle; requests while busy are ignored. Reset is synchronous active-low. Arithmetic overflow wraps rather than saturates.
+
+## Repository organization
+- rtl/: original synthesizable design files, to import from the university machine
+- tb/: original self-checking testbenches, to import
+- docs/: architecture decisions, learning notes, roadmap
+- reports/: milestone reports and curated evidence
+- scripts/: reproducible run commands
+- constraints/: timing constraints, to be developed
+- runs/: generated local output, excluded from Git
+
+## Reproduce
+Load the university-supported Cadence environment first. See scripts/run_commands.tcsh for commands to run in that configured tcsh session. The source files listed in docs/import-and-git.md are required.
+
+## Planned work
+1. Review and preserve the verified baseline.
+2. Generalize accumulation length K and verify boundary cases.
+3. Integrate synchronous operand memories and a reader.
+4. Add convolution scheduling and integer postprocessing.
+5. Validate a small CNN against an independent integer reference.
+6. Synthesize, implement, and analyze the design in Cadence.
+7. Compare controlled physical-design experiments.
+
+Compatible physical SRAM macros are not confirmed. Behavioral memory does not establish a physical SRAM implementation. Memory-placement experiments remain conditional on compatible macro views.
+
+## Reporting policy
+Every milestone records the problem, algorithm, interface, design decisions, verification, commands, tool version, result provenance, bugs, limitations, and interview questions. Record a source commit SHA for each new run. Keep measured results separate from targets and estimates.
+
+Do not commit proprietary PDK/library files, university environment scripts or license settings, tool executables, generated databases, or unreviewed terminal histories. No redistribution license is selected in this starter package.

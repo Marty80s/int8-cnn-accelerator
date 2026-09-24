@@ -1,0 +1,36 @@
+# Generated simulation and implementation data
+runs/
+xcelium.d/
+INCA_libs/
+*.shm/
+*.vcd
+*.fsdb
+*.trn
+*.dsn
+*.history
+*.key
+*.log
+*.jou
+*.db
+*.enc
+*.enc.dat/
+*.dat/
+# Keep reviewed evidence as Markdown or small reviewed text files in reports/.
+# Technology/vendor material stays outside this repository.
+pdk/
+pdks/
+libs/
+libraries/
+*.lib
+*.lib.gz
+*.lef
+*.lef.gz
+*.gds
+*.gds.gz
+*.tch
+qrcTechFile
+.env
+.env.*
+__pycache__/
+.venv/
+.DS_Store
