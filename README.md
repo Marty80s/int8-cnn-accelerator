@@ -11,7 +11,7 @@ The current design is a **4x4 broadcast, output-stationary matrix-multiplication
 | MAC array | 103 matrix tests; 1,648 final output comparisons passed |
 | Controlled compute engine | 23 completed jobs; controller checks passed |
 
-These results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. This documentation package has not rerun the simulations. The exact remote source files must be imported and committed before tagging a reproducible baseline.
+These results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. The six original source files were imported unchanged on September 24, 2026. See [baseline provenance and hashes](reports/00-baseline-import.md). Simulations were not rerun during import.
 
 No synthesis area, post-route frequency, power, FPGA speedup, or CNN accuracy is claimed yet.
 
@@ -21,8 +21,8 @@ At each accepted step k, the array receives A[0:3][k] and B[k][0:3]. Each MAC up
 The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is accepted on a rising edge when in_valid && in_ready. The fourth accepted set completes the job and asserts done for one clock. Input gaps stall computation. start must be pulsed while idle; requests while busy are ignored. Reset is synchronous active-low. Arithmetic overflow wraps rather than saturates.
 
 ## Repository organization
-- rtl/: original synthesizable design files, to import from the university machine
-- tb/: original self-checking testbenches, to import
+- rtl/: original synthesizable design files imported from the university machine
+- tb/: original self-checking testbenches
 - docs/: architecture decisions, learning notes, roadmap
 - reports/: milestone reports and curated evidence
 - scripts/: reproducible run commands
@@ -33,7 +33,7 @@ The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is a
 Load the university-supported Cadence environment first. See scripts/run_commands.tcsh for commands to run in that configured tcsh session. The source files listed in docs/import-and-git.md are required.
 
 ## Planned work
-1. Review and preserve the verified baseline.
+1. Preserve the verified baseline (source import complete).
 2. Generalize accumulation length K and verify boundary cases.
 3. Integrate synchronous operand memories and a reader.
 4. Add convolution scheduling and integer postprocessing.

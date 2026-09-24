@@ -17,9 +17,9 @@ cd ~/ai_accel_pd
 tar -czf ~/ai_accel_pd_verified_sources.tar.gz rtl/mac_int8.sv rtl/mac_array_4x4.sv rtl/matmul_4x4.sv tb/tb_mac_int8.sv tb/tb_mac_array_4x4.sv tb/tb_matmul_4x4.sv
 ```
 
-The repository is https://github.com/Marty80s/int8-cnn-accelerator. Upload the source archive to the assistant for inspection and import into the existing repository.
+The six files were imported unchanged into https://github.com/Marty80s/int8-cnn-accelerator on September 24, 2026. See [the import report](../reports/00-baseline-import.md) for provenance and hashes.
 
-This starter ZIP contains documentation and run instructions, not RTL. Do not replace tested RTL with documentation placeholders.
+The repository now contains both RTL and testbenches. Keep these originals as the baseline for future changes.
 
 ## Ongoing commits
 Keep one meaningful change per commit. Run the appropriate simulation first, record the source commit SHA and results in a milestone report, then commit the report. Example commit subjects:
