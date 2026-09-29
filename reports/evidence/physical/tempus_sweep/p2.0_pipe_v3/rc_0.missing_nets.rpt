@@ -1,0 +1,14 @@
+1 u_compute/\u_array_rows[0].cols[0].u_mac /UNCONNECTED
+2 u_compute/\u_array_rows[0].cols[1].u_mac /UNCONNECTED0
+3 u_compute/\u_array_rows[0].cols[2].u_mac /UNCONNECTED1
+4 u_compute/\u_array_rows[0].cols[3].u_mac /UNCONNECTED2
+5 u_compute/\u_array_rows[1].cols[1].u_mac /UNCONNECTED3
+6 u_compute/\u_array_rows[1].cols[2].u_mac /UNCONNECTED4
+7 u_compute/\u_array_rows[1].cols[3].u_mac /UNCONNECTED5
+8 u_compute/\u_array_rows[2].cols[0].u_mac /UNCONNECTED6
+9 u_compute/\u_array_rows[2].cols[1].u_mac /UNCONNECTED7
+10 u_compute/\u_array_rows[2].cols[2].u_mac /UNCONNECTED8
+11 u_compute/\u_array_rows[2].cols[3].u_mac /UNCONNECTED9
+12 u_compute/\u_array_rows[3].cols[0].u_mac /UNCONNECTED10
+13 u_compute/\u_array_rows[3].cols[2].u_mac /UNCONNECTED11
+14 u_compute/\u_array_rows[3].cols[3].u_mac /UNCONNECTED12

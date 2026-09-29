@@ -1,58 +1,57 @@
-# INT8 CNN Accelerator
+# INT8 Matrix Engine: RTL to Physical Design
 
-SystemVerilog compute engine progressing toward CNN inference, with a 45 nm academic synthesis and physical-design study. No FPGA board or fabricated silicon is required by this project.
-
-## Current status
-The current design is a **4x4 broadcast, output-stationary matrix-multiplication engine**, not yet a complete CNN accelerator. It uses 16 signed INT8 MACs, 32-bit accumulators, and a controller supporting 1–255 operand sets per job. The original fixed-four controller is retained as a baseline.
-
-| Milestone | Recorded result |
-|---|---|
-| Single MAC | 132,084 checks passed |
-| MAC array | 103 matrix tests; 1,648 final output comparisons passed |
-| Controlled compute engine | 23 completed jobs; controller checks passed |
-| Configurable-K engine | 11 completed jobs; 18,752 output checks passed |
-| Standalone operand memory | 526 cycle checks passed |
-| Reader with operand memory | 5 completed jobs; 267 delivered words passed |
-
-The first three results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. The six original source files were imported unchanged on September 24, 2026. See [baseline provenance and hashes](reports/00-baseline-import.md). Simulations were not rerun during import.
-
-The configurable-K result comes from the uploaded September 23, 2026 Xcelium log. See [the configurable-K report](reports/04-configurable-k.md) for the contract, coverage, provenance, and limitations. No simulations were rerun during this import.
-
-A standalone 256x64-bit synchronous operand memory has also passed directed simulation in the uploaded September 23, 2026 Xcelium log. See [the memory report](reports/05-operand-memory.md). It is not yet connected to the compute engine.
-
-The reader has now passed tests with the operand memory, including consumer pauses and reset recovery. See [the reader report](reports/06-operand-reader.md). Connection to the matrix engine is still pending.
-
-The September 2026 Genus clock sweep and selected Innovus/Tempus runs are documented in [the physical design report](reports/08-physical-design-clock-sweep.md). The 500 MHz pipelined synthesis target has zero reported synthesis WNS, but its latest routed Tempus run still has setup and hold violations. No timing-closed post-route frequency, FPGA speedup, or CNN accuracy is claimed.
+A 4×4 INT8 matrix-multiplication engine implemented in SystemVerilog and studied with Cadence Xcelium, Genus, Innovus, and Tempus using an academic 45 nm library. The repository name reflects the longer-term CNN goal; convolution scheduling, requantization, and full CNN inference are future work.
 
 ## Architecture
-At each accepted step k, the array receives A[0:3][k] and B[k][0:3]. Each MAC updates C[i][j] with A[i][k]*B[k][j]. All 16 partial sums stay in their own registers.
 
-The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is accepted on a rising edge when in_valid && in_ready. In `matmul_4x4_k`, the Kth accepted set completes the job and asserts done for one clock. K is captured on an idle start; K=0 requests are ignored. Input gaps stall computation. start must be pulsed while idle; requests while busy are ignored. Reset is synchronous active-low. Arithmetic overflow wraps rather than saturates.
+```mermaid
+flowchart TD
+  H[Host writes and job configuration] --> M[256 × 64-bit operand memory]
+  H --> C[Job control]
+  M --> R[Memory reader]
+  R -->|valid / ready| A[4 × 4 MAC array]
+  C --> R
+  C --> A
+  A --> O[16 signed 32-bit results]
+```
 
-## Repository organization
-- rtl/: original synthesizable design files imported from the university machine
-- tb/: original self-checking testbenches
-- docs/: architecture decisions, learning notes, roadmap
-- reports/: milestone reports and curated evidence
-- scripts/: reproducible run commands
-- constraints/: timing constraints for the academic flow
-- runs/: generated local output, excluded from Git
+`accel_top` integrates memory, reader, and the configurable-K compute engine. Each memory word packs `{B3, B2, B1, B0, A3, A2, A1, A0}`: column k of A and row k of B. Sixteen signed INT8 MACs accumulate the output matrix for K=1–255. The memory is implemented from behavioral RTL; this flow does not use an SRAM macro. The optional `MAC_PIPE` build registers the product before accumulation.
 
-## Reproduce
-Load the university-supported Cadence environment first. See scripts/run_commands.tcsh for commands to run in that configured tcsh session. The source files listed in docs/import-and-git.md are required.
+## Results
 
-## Planned work
-1. Preserve the verified baseline (source import complete).
-2. Generalize accumulation length K (implemented; directed simulation passed).
-3. Integrate synchronous operand memory and a reader (memory and reader tested together; compute integration pending).
-4. Add convolution scheduling and integer postprocessing.
-5. Validate a small CNN against an independent integer reference.
-6. Synthesize, implement, and analyze the design in Cadence (initial runs documented; timing closure pending).
-7. Compare controlled physical-design experiments (clock sweep in progress).
+| Stage / variant | Recorded result |
+|---|---|
+| Baseline RTL verification | MAC: 132,084 checks; array: 103 tests; configurable K: 11 jobs |
+| Memory and reader verification | Memory: 526 cycle checks; reader: 5 jobs / 267 words |
+| Integrated top, baseline | Identity and accumulation tests: 16 result comparisons each |
+| Original MAC synthesis, 2.22 ns target | Reported WNS 0.0 ps; cell area 136,950.600 µm² |
+| Pipelined MAC synthesis, 2.00 ns target | Reported WNS 0.0 ps; cell area 137,049.660 µm² |
+| Pipelined routed design, 2.00 ns target | Innovus reports zero DRC, connectivity, and process-antenna violations |
+| Same routed design, Tempus | Setup WNS −0.002 ns (1 path); hold WNS −0.007 ns (31 paths) |
 
-Compatible physical SRAM macros are not confirmed. Behavioral memory does not establish a physical SRAM implementation. Memory-placement experiments remain conditional on compatible macro views.
+**500 MHz is a tested target, not a timing-closed operating frequency.** Tempus also reports constraint-coverage warnings. See the [physical-design report](reports/08-physical-design-clock-sweep.md) and [raw evidence](reports/evidence/physical/README.md). Power reports are tool estimates under the recorded activity assumptions, not silicon measurements.
 
-## Reporting policy
-Every milestone records the problem, algorithm, interface, design decisions, verification, commands, tool version, result provenance, bugs, and limitations. Record a source commit SHA for each new run. Keep measured results separate from targets and estimates.
+## Run the integrated RTL tests
 
-Do not commit proprietary PDK/library files, university environment scripts or license settings, tool executables, generated databases, or unreviewed terminal histories. No redistribution license is selected in this starter package.
+From the repository root, in a university-configured Cadence **tcsh** session:
+
+```tcsh
+source scripts/run_top.tcsh
+```
+
+This runs the identity test followed by the accumulation test. Inspect both logs for PASS. The recorded passes above concern the baseline; this update does not claim a new simulation run or a verified pipelined regression. See [reproduction instructions](docs/reproduce-physical.md) for build variants and the synthesis-to-Tempus flow.
+
+## Repository map
+
+- `rtl/`, `tb/`: RTL and self-checking testbenches.
+- `scripts/`: simulation, synthesis, implementation, STA, LEC, and clock-sweep scripts.
+- `constraints/`: SDC and the Run 2 MMMC template.
+- `reports/`: milestone explanations, recorded results, and curated evidence.
+- `docs/`: reproduction instructions and remaining work.
+- `runs/`: generated local outputs; excluded from Git.
+
+## Scope and provenance
+
+The baseline simulations and physical-design results were produced on the university Cadence installation. The report files preserve their run dates and tool versions. Original import details and source hashes are in [baseline provenance](reports/00-baseline-import.md); later milestones have separate reports. The accumulated-matrix PASS transcript was shared during development; the archive supplied for this update does not include that simulation log.
+
+Final pipelined RTL regression and LEC pass evidence are still needed. Remaining work includes timing/constraint closure and CNN functionality; see the [roadmap](docs/roadmap.md). Technology libraries, corrected library copies, tool databases, and license settings are not distributed.

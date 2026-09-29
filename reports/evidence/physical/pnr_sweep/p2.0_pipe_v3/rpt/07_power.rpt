@@ -1,0 +1,97 @@
+*----------------------------------------------------------------------------------------
+*	Innovus 21.19-s058_1 (64bit) 04/04/2024 09:59 (Linux 3.10.0-693.el7.x86_64)
+*	
+*
+* 	Date & Time:	2026-Sep-29 11:21:01 (2026-Sep-29 15:21:01 GMT)
+*
+*----------------------------------------------------------------------------------------
+*
+*	Design: accel_top
+*
+*	Liberty Libraries used: 
+*	        setup_view: /opt/eda/cadence/local/gsclib045_all/lan/flow/t1u1/reference_libs/GPDK045/gsclib045_all_v4.4/gsclib045/timing/slow_vdd1v0_basicCells.lib
+*
+*	Power Domain used: 
+*              Rail:        VDD      Voltage:        0.9 
+*
+*       Power View : setup_view
+*
+*       User-Defined Activity : N.A.
+*
+*       Activity File: N.A.
+*
+*       Hierarchical Global Activity: N.A.
+*
+*       Global Activity: N.A.
+*
+*       Sequential Element Activity: 0.200000
+*
+*       Primary Input Activity: 0.200000
+*
+*       Default icg ratio: N.A.
+*
+*       Global Comb ClockGate Ratio: N.A.
+*
+*	Power Units = 1mW
+*
+*	Time Units = 1e-09 secs 
+*
+*       report_power -outfile rpt/07_power.rpt
+*
+-----------------------------------------------------------------------------------------
+
+
+Total Power 
+-----------------------------------------------------------------------------------------
+Total Internal Power:        7.55641713 	   67.5065%
+Total Switching Power:       3.63376641 	   32.4628%
+Total Leakage Power:         0.00343460 	    0.0307%
+Total Power:                11.19361813 
+-----------------------------------------------------------------------------------------
+
+
+Group                           Internal   Switching     Leakage       Total  Percentage 
+                                Power      Power         Power         Power  (%)        
+-----------------------------------------------------------------------------------------
+Sequential                         3.533      0.5167    0.001535       4.052        36.2 
+Macro                                  0           0           0           0           0 
+IO                                     0           0           0           0           0 
+Combinational                      2.685       2.858    0.001714       5.545       49.54 
+Clock (Combinational)            0.07353      0.1555   2.757e-05      0.2291       2.047 
+Clock (Sequential)                 1.264      0.1034   0.0001584       1.367       12.22 
+-----------------------------------------------------------------------------------------
+Total                              7.556       3.634    0.003435       11.19         100 
+-----------------------------------------------------------------------------------------
+
+
+Rail                  Voltage   Internal   Switching     Leakage       Total  Percentage 
+                                Power      Power         Power         Power  (%)        
+-----------------------------------------------------------------------------------------
+VDD                       0.9      7.556       3.634    0.003435       11.19         100 
+
+
+Clock                           Internal   Switching     Leakage       Total  Percentage 
+                                Power      Power         Power         Power  (%)        
+-----------------------------------------------------------------------------------------
+core_clk                           1.337      0.2589    0.000186       1.597       14.26 
+-----------------------------------------------------------------------------------------
+Total (excluding duplicates)       1.337      0.2589    0.000186       1.597       14.26 
+-----------------------------------------------------------------------------------------
+Clock: core_clk
+Clock Period: 0.002000 usec 
+Clock Toggle Rate:  1000.0000 Mhz 
+Clock Static Probability:  0.5000
+
+
+
+-----------------------------------------------------------------------------------------
+*	Power Distribution Summary: 
+*                Highest Average Power: u_memory/CTS_ccl_a_buf_00032 (CLKBUFX20):          0.03266 
+*                Highest Leakage Power:     u_memory/FE_RC_8986_0 (NOR4X8):        7.433e-07 
+*          Total Cap:      1.09008e-10 F
+*          Total instances in design: 47502
+*          Total instances in design with no power:     0
+*          Total instances in design with no activity:     0
+*          Total Fillers and Decap:     0
+-----------------------------------------------------------------------------------------
+
