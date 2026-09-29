@@ -1,6 +1,11 @@
 `timescale 1ns/1ps
 
+`ifndef MAC_PIPE
+`define MAC_PIPE 0
+`endif
+
 module tb_matmul_4x4_k;
+    localparam int PIPE = `MAC_PIPE;
 
     logic clk = 0;
     logic rst_n = 0;
@@ -15,6 +20,9 @@ module tb_matmul_4x4_k;
     wire signed [31:0] result [0:3][0:3];
 
     integer expected [0:3][0:3];
+    // Pipelined model: products accepted last edge, added on the next edge.
+    integer pending [0:3][0:3];
+    bit     pending_valid = 0;
     integer jobs = 0;
     integer checks = 0;
 
@@ -52,6 +60,16 @@ module tb_matmul_4x4_k;
                 checks++;
             end
         end
+    endtask
+
+    // Call right after every rising edge inside a job: with PIPE = 1 the
+    // products accepted on the previous edge reach the accumulators now.
+    task automatic fold_pending;
+        if (pending_valid)
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                    expected[i][j] = expected[i][j] + pending[i][j];
+        pending_valid = 0;
     endtask
 
     task automatic zero_expected;
@@ -108,6 +126,7 @@ module tb_matmul_4x4_k;
 
                     @(posedge clk);
                     #1;
+                    fold_pending();
                     check_control(1, 1, 0);
                     check_results();
                 end
@@ -129,6 +148,7 @@ module tb_matmul_4x4_k;
 
             @(posedge clk);
             #1;
+            fold_pending();
 
             // Independent integer reference:
             // C[i][j] += A[i][k] * B[k][j].
@@ -136,16 +156,31 @@ module tb_matmul_4x4_k;
                 for (int j = 0; j < 4; j++) begin
                     av = ((k * 17 + i * 29) % 256) - 128;
                     bv = ((k * 31 + j * 13 + 7) % 256) - 128;
-                    expected[i][j] = expected[i][j] + av * bv;
+                    if (PIPE == 0)
+                        expected[i][j] = expected[i][j] + av * bv;
+                    else
+                        pending[i][j] = av * bv;
                 end
             end
+            pending_valid = (PIPE != 0);
 
             check_results();
 
-            if (k == length - 1)
-                check_control(0, 0, 1);
-            else
+            if (k == length - 1) begin
+                if (PIPE == 0) begin
+                    check_control(0, 0, 1);
+                end else begin
+                    // DRAIN: still busy, not ready, last product in flight.
+                    check_control(1, 0, 0);
+                    @(posedge clk);
+                    #1;
+                    fold_pending();
+                    check_results();
+                    check_control(0, 0, 1);
+                end
+            end else begin
                 check_control(1, 1, 0);
+            end
         end
 
         // After completion, valid data alone must not alter results.
@@ -234,9 +269,10 @@ module tb_matmul_4x4_k;
 
         @(posedge clk);
         #1;
+        // With PIPE = 1 the product is still in flight when reset hits.
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
-                expected[i][j] = 6;
+                expected[i][j] = (PIPE == 0) ? 6 : 0;
 
         check_control(1, 1, 0);
         check_results();
@@ -249,6 +285,7 @@ module tb_matmul_4x4_k;
         @(posedge clk);
         #1;
         zero_expected();
+        pending_valid = 0;
         check_control(0, 0, 0);
         check_results();
 
@@ -259,8 +296,8 @@ module tb_matmul_4x4_k;
         run_job(3, 1);
 
         $display(
-            "PASS: %0d completed jobs, %0d output checks; zero-length and reset checks passed",
-            jobs, checks);
+            "PASS: %0d completed jobs, %0d output checks; zero-length and reset checks passed (PIPE=%0d)",
+            jobs, checks, PIPE);
         $finish;
     end
 

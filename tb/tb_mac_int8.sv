@@ -1,6 +1,11 @@
+`ifndef MAC_PIPE
+`define MAC_PIPE 0
+`endif
+
 module tb_mac_int8;
     timeunit 1ns;
     timeprecision 1ps;
+    localparam int PIPE = `MAC_PIPE;
 
     logic clk = 0;
     logic rst_n = 0;
@@ -10,6 +15,9 @@ module tb_mac_int8;
     logic signed [31:0] acc;
     logic signed [31:0] expected = 0;
     int checks = 0;
+    // Pipelined model: product waiting to be accumulated next cycle.
+    logic signed [31:0] pending = 0;
+    bit pending_valid = 0;
 
     mac_int8 dut (.*);
     always #5 clk = ~clk;
@@ -28,10 +36,18 @@ module tb_mac_int8;
         a = av;
         b = bv;
 
-        if (!reset_n || clr)
+        if (!reset_n || clr) begin
             expected = 0;
-        else if (en)
-            expected = expected + (av * bv);
+            pending_valid = 0;
+        end else if (PIPE == 0) begin
+            if (en)
+                expected = expected + (av * bv);
+        end else begin
+            if (pending_valid)
+                expected = expected + pending;
+            pending_valid = en;
+            pending = av * bv;
+        end
 
         @(posedge clk);
         #1;
@@ -64,7 +80,7 @@ module tb_mac_int8;
         repeat (131073)
             step(1, 0, 1, -128, -128);
 
-        $display("PASS: %0d MAC checks completed", checks);
+        $display("PASS: %0d MAC checks completed (PIPE=%0d)", checks, PIPE);
         $finish;
     end
 endmodule
