@@ -1,6 +1,15 @@
 `timescale 1ns/1ps
 
-module matmul_4x4_k (
+// PIPE must match mac_int8 (both default to `MAC_PIPE). With PIPE = 1 the
+// last product lands one cycle after the last input, so the controller
+// waits one extra DRAIN cycle before pulsing done.
+`ifndef MAC_PIPE
+`define MAC_PIPE 0
+`endif
+
+module matmul_4x4_k #(
+    parameter int PIPE = `MAC_PIPE
+) (
     input  logic              clk,
     input  logic              rst_n,
     input  logic              start,
@@ -20,7 +29,8 @@ module matmul_4x4_k (
     typedef enum logic [1:0] {
         IDLE,
         CLEAR,
-        COMPUTE
+        COMPUTE,
+        DRAIN
     } state_t;
 
     state_t state;
@@ -74,12 +84,22 @@ module matmul_4x4_k (
                             // The array also accumulates the final
                             // product on this same rising edge.
                             remaining <= 8'd0;
-                            state     <= IDLE;
-                            done      <= 1'b1;
+                            if (PIPE != 0) begin
+                                state <= DRAIN;
+                            end else begin
+                                state <= IDLE;
+                                done  <= 1'b1;
+                            end
                         end else begin
                             remaining <= remaining - 8'd1;
                         end
                     end
+                end
+
+                DRAIN: begin
+                    // Pipelined MACs add the last product on this edge.
+                    state <= IDLE;
+                    done  <= 1'b1;
                 end
 
                 default: begin

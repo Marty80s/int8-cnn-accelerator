@@ -1,6 +1,6 @@
 # INT8 CNN Accelerator
 
-SystemVerilog compute engine progressing toward CNN inference and ASIC physical implementation. No FPGA board or fabricated silicon is required by this project.
+SystemVerilog compute engine progressing toward CNN inference, with a 45 nm academic synthesis and physical-design study. No FPGA board or fabricated silicon is required by this project.
 
 ## Current status
 The current design is a **4x4 broadcast, output-stationary matrix-multiplication engine**, not yet a complete CNN accelerator. It uses 16 signed INT8 MACs, 32-bit accumulators, and a controller supporting 1–255 operand sets per job. The original fixed-four controller is retained as a baseline.
@@ -22,7 +22,7 @@ A standalone 256x64-bit synchronous operand memory has also passed directed simu
 
 The reader has now passed tests with the operand memory, including consumer pauses and reset recovery. See [the reader report](reports/06-operand-reader.md). Connection to the matrix engine is still pending.
 
-No synthesis area, post-route frequency, power, FPGA speedup, or CNN accuracy is claimed yet.
+The September 2026 Genus clock sweep and selected Innovus/Tempus runs are documented in [the physical design report](reports/08-physical-design-clock-sweep.md). The 500 MHz pipelined synthesis target has zero reported synthesis WNS, but its latest routed Tempus run still has setup and hold violations. No timing-closed post-route frequency, FPGA speedup, or CNN accuracy is claimed.
 
 ## Architecture
 At each accepted step k, the array receives A[0:3][k] and B[k][0:3]. Each MAC updates C[i][j] with A[i][k]*B[k][j]. All 16 partial sums stay in their own registers.
@@ -35,7 +35,7 @@ The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is a
 - docs/: architecture decisions, learning notes, roadmap
 - reports/: milestone reports and curated evidence
 - scripts/: reproducible run commands
-- constraints/: timing constraints, to be developed
+- constraints/: timing constraints for the academic flow
 - runs/: generated local output, excluded from Git
 
 ## Reproduce
@@ -47,8 +47,8 @@ Load the university-supported Cadence environment first. See scripts/run_command
 3. Integrate synchronous operand memory and a reader (memory and reader tested together; compute integration pending).
 4. Add convolution scheduling and integer postprocessing.
 5. Validate a small CNN against an independent integer reference.
-6. Synthesize, implement, and analyze the design in Cadence.
-7. Compare controlled physical-design experiments.
+6. Synthesize, implement, and analyze the design in Cadence (initial runs documented; timing closure pending).
+7. Compare controlled physical-design experiments (clock sweep in progress).
 
 Compatible physical SRAM macros are not confirmed. Behavioral memory does not establish a physical SRAM implementation. Memory-placement experiments remain conditional on compatible macro views.
 
