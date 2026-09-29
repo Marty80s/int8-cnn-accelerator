@@ -1,19 +1,26 @@
-# Milestones and acceptance criteria
+# Project status and next steps
 
-| Stage | Work | Acceptance evidence |
-|---|---|---|
-| 00 | Environment and baseline import | Exact saved source files, documented tool versions, baseline run |
-| 01 | Single MAC | Signed products, reset/clear priority, hold, randomized arithmetic, overflow |
-| 02 | 4x4 array | All output elements match independent matrix reference |
-| 03 | Controller | Input stalls, completion pulse, ignored busy start, repeated jobs, reset recovery |
-| 04 | Configurable K | Capture K on start, define K=0 behavior, K=1 and maximum, stall handling |
-| 05 | Memory-fed compute | Defined packing, synchronous latency, addresses, stale-data prevention |
-| 06 | Convolution and quantization | Independent software reference; documented rounding and saturation |
-| 07 | Small CNN | Layer-by-layer exact integer checks and held-out classification accuracy |
-| 08 | Synthesis | Reviewed constraints, mapped netlist, area and timing; no unexplained latches |
-| 09 | Physical implementation | Legal placement, clock tree, routing, extracted STA, documented remaining violations |
-| 10 | Experiments | Common baseline/settings; comparable measurements and justified conclusions |
+## Implemented and recorded
 
-No board deployment is planned. Full physical SRAM integration depends on obtaining compatible Liberty, LEF, functional models and required physical views. Extraction data and layer-stack compatibility also need validation.
+- Signed INT8 MAC, 4×4 array, fixed-four and configurable-K controllers.
+- Synchronous operand memory, stalled reader, and integrated `accel_top`.
+- Baseline directed simulation including integrated identity and accumulation tests.
+- Optional product pipeline and clock-gated synthesis experiments.
+- Genus clock sweeps; selected Innovus placement, CTS, routing, and Tempus analyses.
+- Recorded 2.0 ns pipelined run with clean Innovus DRC, connectivity, and antenna checks.
 
-Study each milestone before expanding it: arithmetic example -> cycle trace -> RTL -> test -> report.
+## Remaining validation
+
+- Complete and preserve simulation evidence for the final pipeline variant.
+- Run and preserve RTL-to-synthesis and synthesis-to-route equivalence results.
+- Resolve Tempus drive/constraint-coverage warnings and remaining setup/hold violations.
+- Record exact source/configuration revisions and run-specific interactive changes for each experiment.
+- Establish comparable activity assumptions before comparing power across variants.
+
+## Future functionality
+
+- Convolution scheduling or host-side im2col.
+- Integer requantization, ReLU, and INT8 saturation.
+- A small CNN checked against an independent integer reference model.
+
+The current scope is a matrix engine with an academic physical-design study. Full CNN inference and timing-closed 500 MHz operation are not demonstrated by the supplied evidence.

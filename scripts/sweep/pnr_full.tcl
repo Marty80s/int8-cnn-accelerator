@@ -24,7 +24,7 @@ file mkdir rpt out
 setMultiCpuUsage -localCpu 4
 
 # MMMC: copy of the Run 2 file with the SDC swapped for the scaled one
-set fh [open $root/runs/innovus_run2/mmmc_run2.tcl r]; set mm [read $fh]; close $fh
+set fh [open $root/constraints/mmmc_run2.tcl r]; set mm [read $fh]; close $fh
 set n [regsub -all {[^\s\{\}\"]+\.sdc} $mm $syn/accel_top_p$P.sdc mm]
 if {$n == 0} { error "pnr_full: no .sdc path found in mmmc_run2.tcl" }
 set fh [open $out/mmmc_p$P.tcl w]; puts $fh $mm; close $fh

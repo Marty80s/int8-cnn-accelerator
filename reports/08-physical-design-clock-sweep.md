@@ -1,8 +1,8 @@
 # Physical design and clock sweep (September 2026)
 
-This note summarizes the reviewed `int8_lab.zip` archive. The original generated
-tool reports and databases remain on the university machine; `runs/` is excluded
-from this repository. Values below describe specific runs, not silicon measurements.
+This note summarizes the reviewed `int8_lab.zip` archive. Selected original reports and sweep CSVs are preserved under
+[physical evidence](evidence/physical/README.md); generated databases remain local.
+`runs/` is excluded from this repository. Values below describe specific runs, not silicon measurements.
 
 ## Flow and scope
 
@@ -17,8 +17,11 @@ from this repository. Values below describe specific runs, not silicon measureme
 - Selected variants were implemented in Innovus with floorplanning, power
   grid, placement, CTS, route, RC extraction, and checks. Tempus analyzes the
   routed netlist with SPEF, propagated clocks, OCV, CPPR, and SI-aware delay.
-  The scripts reference university-specific absolute paths and a Run 2 MMMC
-  file that was not included in the archive; adapt these paths to reproduce.
+  The scripts retain university-specific paths. The later update archive supplied
+  the missing Run 2 MMMC file, now tracked as `constraints/mmmc_run2.tcl`.
+  See [reproduction instructions](../docs/reproduce-physical.md) for the local
+  LEF correction and run commands. These restored dependencies were not rerun
+  through Cadence during the repository update.
 
 ## Synthesis sweep
 
