@@ -11,6 +11,3 @@ The first identity test initially reported expected 0 versus actual -8 at output
 
 ## Limitations
 Array verification used K=4. No memories, convolution mapping, power or routed timing are established.
-
-## Interview preparation
-Trace a 2x2 example first. Explain one-output-per-MAC, operand reuse, local partial sums, why MAC count does not alone determine throughput, and the distinction from systolic transport.

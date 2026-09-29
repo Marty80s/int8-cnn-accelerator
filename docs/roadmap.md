@@ -16,4 +16,4 @@
 
 No board deployment is planned. Full physical SRAM integration depends on obtaining compatible Liberty, LEF, functional models and required physical views. Extraction data and layer-stack compatibility also need validation.
 
-Study each milestone before expanding it: arithmetic example -> cycle trace -> RTL -> test -> report -> interview explanation.
+Study each milestone before expanding it: arithmetic example -> cycle trace -> RTL -> test -> report.

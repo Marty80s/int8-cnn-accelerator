@@ -88,11 +88,3 @@ The run preceded this import commit and its log contains no source Git SHA. Thes
 Define the eight INT8 byte lanes, unpack each delivered word into four A and four B values, and connect the output handshake to matmul_4x4_k. Start both components consistently, guard memory writes during computation, and verify complete matrix results from stored operands.
 
 No synthesis, physical memory mapping, area, power, clock closure, or CNN accuracy result exists for this milestone.
-
-## Interview preparation
-
-- Why buffer the word? Memory response validity can end before the consumer is ready.
-- Why advance on acceptance? Advancing during a stall could drop or duplicate operands.
-- Why a separate WAIT_DATA state? The memory read is synchronous and the response must be captured after it becomes valid.
-- What does reader done mean? All K words have been accepted by the consumer.
-- What is the throughput limitation? The request, response capture, and delivery use separate cycles.

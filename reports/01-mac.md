@@ -14,6 +14,3 @@ The RTL file was initially missing. After saving it, elaboration detected a miss
 
 ## Limitations
 No formal proof, synthesis, power estimate, or maximum operating frequency established. The testbench clock is a stimulus setting, not timing closure.
-
-## Interview preparation
-Explain why 8x8 needs 16 product bits, how sign extension works, why accumulation needs more bits, reset versus clear, nonblocking assignment behavior, and why overflow is wraparound.

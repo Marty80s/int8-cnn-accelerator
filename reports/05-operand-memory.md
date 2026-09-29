@@ -82,11 +82,3 @@ The user ran the simulation before this import commit. The log contains no sourc
 Memory is tested in isolation. No reader, packing/unpacking logic, or compute integration is implemented in this milestone. No physical SRAM macro is selected and no synthesis area, power, or post-route timing is claimed. A synthesis tool may implement behavioral storage using registers unless a suitable memory mapping flow is provided.
 
 Next, define operand lane packing and build a reader that requests addresses in order, waits for valid read data, and delivers each word exactly once to the compute handshake. Integration tests must cover reset, stalls, and first/last-word handling.
-
-## Interview preparation
-
-- Why 64 bits per word? Four A and four B operands, each eight bits, feed one array update.
-- What makes the read synchronous? The address is sampled at a clock edge, and the output is registered.
-- Why rd_valid? Held data is not necessarily a new response.
-- Why preserve memory during reset? Control can restart without erasing already loaded operands.
-- Is this a physical SRAM? No. The storage behavior is verified; physical implementation remains to be established.

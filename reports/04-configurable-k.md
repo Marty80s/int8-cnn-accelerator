@@ -84,11 +84,3 @@ The recorded run preceded this import commit, so its log does not identify a sou
 The current testbench supplies operands directly. Memory, address generation, CNN scheduling, bias, activation, and requantization are not implemented. No synthesis area, power, or physical timing has been measured. With K at most 255 and each job cleared, INT8 products cannot overflow the 32-bit accumulator, although the underlying MAC uses wrapping arithmetic.
 
 Next, implement synchronous operand storage and a reader that respects the compute handshake and memory read latency.
-
-## Interview preparation
-
-- Why can K change without adding MACs? The same 16 MACs are reused over more accepted cycles; output dimensions stay 4x4.
-- Why capture K at start? External configuration changes must not alter an active job.
-- Why count handshakes? A stalled clock cycle contributes no product.
-- Why use a remaining counter? Testing for one identifies the final accepted set directly.
-- Does a simulation clock prove achievable frequency? No; synthesis and physical timing analysis are required.

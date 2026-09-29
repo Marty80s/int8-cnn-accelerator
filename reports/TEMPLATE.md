@@ -26,6 +26,3 @@ Symptom, hypothesis, experiment, observation, fix, root-cause confidence.
 
 ## Limitations and next step
 Dependencies and unresolved risks.
-
-## Interview explanation
-What I built; why; how I tested it; what I learned.

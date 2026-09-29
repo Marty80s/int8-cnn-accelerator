@@ -10,6 +10,3 @@ The 23 completed jobs were identity without stalls, identity with stalls, 20 ran
 
 ## Limitations and next change
 K is fixed at four; no memory interface is integrated. Generalize K next, capture configuration on start, define invalid configuration behavior and verify counter boundaries. Do not change the verified baseline until it is committed.
-
-## Interview preparation
-Explain why the counter follows accepted operands rather than elapsed cycles. Trace a stall and the final MAC edge. Explain why done and the updated result become visible together after the edge.

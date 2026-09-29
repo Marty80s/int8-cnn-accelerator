@@ -53,6 +53,6 @@ Load the university-supported Cadence environment first. See scripts/run_command
 Compatible physical SRAM macros are not confirmed. Behavioral memory does not establish a physical SRAM implementation. Memory-placement experiments remain conditional on compatible macro views.
 
 ## Reporting policy
-Every milestone records the problem, algorithm, interface, design decisions, verification, commands, tool version, result provenance, bugs, limitations, and interview questions. Record a source commit SHA for each new run. Keep measured results separate from targets and estimates.
+Every milestone records the problem, algorithm, interface, design decisions, verification, commands, tool version, result provenance, bugs, and limitations. Record a source commit SHA for each new run. Keep measured results separate from targets and estimates.
 
 Do not commit proprietary PDK/library files, university environment scripts or license settings, tool executables, generated databases, or unreviewed terminal histories. No redistribution license is selected in this starter package.
