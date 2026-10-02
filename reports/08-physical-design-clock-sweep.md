@@ -1,55 +1,45 @@
-# Physical design and clock sweep (September 2026)
+# Physical design and clock sweep
 
-This note summarizes the reviewed `int8_lab.zip` archive. The original generated
-tool reports and databases remain on the university machine; `runs/` is excluded
-from this repository. Values below describe specific runs, not silicon measurements.
+Updated from `int8_review_20261002_010807.zip`, captured October 2, 2026. Report timestamps identify the actual September runs. This supersedes the earlier status based on the v3 run; historical results remain below. No EDA analysis was rerun during import.
 
-## Flow and scope
+## Flow
 
-- `accel_top` is a 4x4 INT8 matrix multiplication engine with 16 signed MACs,
-  behavioral operand memory, and a configurable accumulation length. It is not
-  yet a complete CNN accelerator or an SRAM-macro-based implementation.
-- The `PIPE` build option registers the 16-bit product before accumulation.
-- `scripts/sweep/run_sweep.tcsh` varies the clock period and invokes Genus;
-  `synth_sweep.tcl` records synthesis timing, cell area, cell count, a power
-  estimate, and runtime. The original and pipelined sweeps both have clock
-  gating enabled in the supplied summaries.
-- Selected variants were implemented in Innovus with floorplanning, power
-  grid, placement, CTS, route, RC extraction, and checks. Tempus analyzes the
-  routed netlist with SPEF, propagated clocks, OCV, CPPR, and SI-aware delay.
-  The scripts reference university-specific absolute paths and a Run 2 MMMC
-  file that was not included in the archive; adapt these paths to reproduce.
+`accel_top` is a 4x4 INT8 matrix engine with behavioral operand memory. The optional pipeline registers the product before accumulation. Genus performs synthesis and clock gating; Innovus performs floorplanning, power planning, placement, CTS, routing, and extraction; Tempus reads the routed netlist and SPEF.
+
+The [STA script](../scripts/sweep/sta_sweep_tempus.tcl) and [recorded analysis settings](evidence/physical/tempus_sweep/p2.0_pipe_v5/analysis-settings.txt) enable propagated clocks, on-chip variation, CPPR, and SI-aware delay. The [v5 MMMC file](evidence/physical/pnr_sweep/p2.0_pipe_v5/mmmc_p2.0.tcl) defines slow/125 C setup and fast/0 C hold views. This is the recorded academic analysis scope, not exhaustive foundry signoff.
 
 ## Synthesis sweep
 
-| Variant | Clock target | Genus WNS | Cell area | Cells |
+| Variant | Target | Reported Genus WNS | Cell area (um2) | Cells |
 |---|---:|---:|---:|---:|
-| Original MAC | 2.50 ns (400 MHz) | 0.0 ps | 136,034.399 um2 | 37,838 |
-| Original MAC | 2.22 ns (450.5 MHz) | 0.0 ps | 136,950.600 um2 | 38,952 |
-| Original MAC | 2.00 ns (500 MHz) | -217.7 ps | 137,834.208 um2 | 39,988 |
-| Pipelined MAC | 2.00 ns (500 MHz) | 0.0 ps | 137,049.660 um2 | 39,433 |
-| Pipelined MAC | 1.82 ns (549.5 MHz) | -49.5 ps | 135,409.086 um2 | 39,501 |
+| Original MAC | 2.50 ns / 400 MHz | 0.0 ps | 136,034.399 | 37,838 |
+| Original MAC | 2.22 ns / 450.5 MHz | 0.0 ps | 136,950.600 | 38,952 |
+| Original MAC | 2.00 ns / 500 MHz | -217.7 ps | 137,834.208 | 39,988 |
+| Pipelined MAC | 2.00 ns / 500 MHz | 0.0 ps | 137,049.660 | 39,433 |
+| Pipelined MAC | 1.82 ns / 549.5 MHz | -49.5 ps | 135,409.086 | 39,501 |
 
-The supplied original summary covers targets from 7.0 to 1.33 ns; the
-pipelined summary covers 2.5 to 1.43 ns. These numbers come from Genus
-summaries, not routed signoff. The original `sweep_summary.csv` has no header
-and `sweep_all.csv` has a header after its data, so import those files with
-care. Power values have not been normalized or validated for comparison.
+The [original](evidence/physical/sweep/sweep_summary.csv) and [pipelined](evidence/physical/sweep/sweep_summary_pipe.csv) CSVs preserve the tool output. These are synthesis values, not post-route results. Both sweeps have clock gating enabled. CSV formatting is preserved, including missing or unusually located headers.
 
-## Routed checks and limitations
+## Routed 500 MHz progression
 
-The latest supplied 2.00 ns pipelined Innovus run (`p2.0_pipe_v3`) reports no
-DRC, connectivity, or process-antenna violations. Its Tempus analysis summary
-reports setup WNS/TNS **-0.002/-0.002 ns** (one violating path), and hold
-WNS/TNS **-0.007/-0.092 ns** (31 violating paths). This run therefore does
-not demonstrate timing closure at 500 MHz.
+| Run | Worst setup slack | Worst hold slack | Evidence |
+|---|---:|---:|---|
+| `p2.0_pipe_v3` | -0.002 ns | -0.007 ns | [Analysis summary](evidence/physical/tempus_sweep/p2.0_pipe_v3/rpt/analysis_summary.rpt): 1 setup / 31 hold violations |
+| `p2.0_pipe_v4` | -0.006 ns | See run CSV | [Analysis summary](evidence/physical/tempus_sweep/p2.0_pipe_v4/rpt/analysis_summary.rpt), [CSV](evidence/physical/tempus_sweep/p2.0_pipe_v4/tempus_result.csv) |
+| `p2.0_pipe_v5` | **+0.001 ns** | **+0.004 ns** | [Setup paths](evidence/physical/tempus_sweep/p2.0_pipe_v5/rpt/setup_paths.rpt), [hold paths](evidence/physical/tempus_sweep/p2.0_pipe_v5/rpt/hold_paths.rpt), [CSV](evidence/physical/tempus_sweep/p2.0_pipe_v5/tempus_result.csv) |
 
-`check_timing -verbose` additionally reports 168 `no_drive` warnings and 556
-`uncons_endpoint` warnings. Investigate the clock-gating enable pins, model
-input drive, and rerun constraint coverage and setup/hold analysis before
-making a signoff or achieved-frequency claim. An empty analysis summary in
-some other variants must not be treated as timing closure.
+The v5 reports are dated September 29 at 17:00. Setup Path 1 has a 2.000 ns phase shift, 0.100 ns uncertainty, propagated clock latency, and +0.001 ns slack. Hold Path 1 has a 0.200 ns input delay, 0.100 ns uncertainty, and +0.004 ns slack. The [actual SDC](evidence/physical/sweep/p2.0_pipe/accel_top_p2.0.sdc) preserves the interface assumptions. The sweep scales maximum I/O delays with clock period while retaining minimum delays and uncertainty.
 
-The archive includes RTL testbenches and scripts for LEC and gate-level
-simulation, but the reviewed package does not contain pass transcripts for
-those final checks. Do not claim these runs passed on this evidence alone.
+The v5 [analysis summary](evidence/physical/tempus_sweep/p2.0_pipe_v5/rpt/analysis_summary.rpt) contains view headings without populated tables. That file alone is insufficient evidence of closure; the positive-slack claim is established by the explicit path reports and CSV, with the [all-violators report](evidence/physical/tempus_sweep/p2.0_pipe_v5/rpt/all_violators.rpt) reporting no listed violations.
+
+The same run has clean Innovus [DRC](evidence/physical/pnr_sweep/p2.0_pipe_v5/rpt/07_drc.rpt), [connectivity](evidence/physical/pnr_sweep/p2.0_pipe_v5/rpt/07_conn.rpt), and [process-antenna](evidence/physical/pnr_sweep/p2.0_pipe_v5/rpt/07_antenna.rpt) reports. These checks do not establish separate foundry DRC/LVS signoff.
+
+## Remaining verification scope
+
+- [Constraint coverage](evidence/physical/tempus_sweep/p2.0_pipe_v5/rpt/check_timing.rpt) still reports **168 no-drive and 556 unconstrained-endpoint warnings**. Review and resolve or justify these before claiming complete timing coverage.
+- SPEF missing-net reports for [rc_0](evidence/physical/tempus_sweep/p2.0_pipe_v5/rc_0.missing_nets.rpt) and [rc_125](evidence/physical/tempus_sweep/p2.0_pipe_v5/rc_125.missing_nets.rpt) are preserved for review.
+- The supplied LEC pass logs concern the earlier clock-gated baseline, not the v5 pipeline. Final pipelined regression and equivalence results are not established by this archive.
+- The 38,575-instance count, 0.370 mV VDD drop, and PPA reductions belong to the earlier 100 MHz implementation. Do not attribute them to the v5 run.
+- The scripts and constraints are supplied snapshots with environment-specific dependencies; historical run-to-source identity is not independently proven.
+
+A supported description is: **"Achieved +1 ps setup and +4 ps hold slack at a 500 MHz target in the recorded post-route Tempus views, with remaining constraint-coverage warnings documented."**

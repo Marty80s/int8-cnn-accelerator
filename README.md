@@ -1,58 +1,50 @@
-# INT8 CNN Accelerator
+# INT8 Matrix Engine: RTL to Physical Design
 
-SystemVerilog compute engine progressing toward CNN inference, with a 45 nm academic synthesis and physical-design study. No FPGA board or fabricated silicon is required by this project.
-
-## Current status
-The current design is a **4x4 broadcast, output-stationary matrix-multiplication engine**, not yet a complete CNN accelerator. It uses 16 signed INT8 MACs, 32-bit accumulators, and a controller supporting 1–255 operand sets per job. The original fixed-four controller is retained as a baseline.
-
-| Milestone | Recorded result |
-|---|---|
-| Single MAC | 132,084 checks passed |
-| MAC array | 103 matrix tests; 1,648 final output comparisons passed |
-| Controlled compute engine | 23 completed jobs; controller checks passed |
-| Configurable-K engine | 11 completed jobs; 18,752 output checks passed |
-| Standalone operand memory | 526 cycle checks passed |
-| Reader with operand memory | 5 completed jobs; 267 delivered words passed |
-
-The first three results were observed in user-supplied Xcelium 23.09-s012 transcripts on September 22, 2026. The six original source files were imported unchanged on September 24, 2026. See [baseline provenance and hashes](reports/00-baseline-import.md). Simulations were not rerun during import.
-
-The configurable-K result comes from the uploaded September 23, 2026 Xcelium log. See [the configurable-K report](reports/04-configurable-k.md) for the contract, coverage, provenance, and limitations. No simulations were rerun during this import.
-
-A standalone 256x64-bit synchronous operand memory has also passed directed simulation in the uploaded September 23, 2026 Xcelium log. See [the memory report](reports/05-operand-memory.md). It is not yet connected to the compute engine.
-
-The reader has now passed tests with the operand memory, including consumer pauses and reset recovery. See [the reader report](reports/06-operand-reader.md). Connection to the matrix engine is still pending.
-
-The September 2026 Genus clock sweep and selected Innovus/Tempus runs are documented in [the physical design report](reports/08-physical-design-clock-sweep.md). The 500 MHz pipelined synthesis target has zero reported synthesis WNS, but its latest routed Tempus run still has setup and hold violations. No timing-closed post-route frequency, FPGA speedup, or CNN accuracy is claimed.
+A 4x4 output-stationary INT8 matrix-multiplication engine implemented in SystemVerilog, with a Cadence synthesis and physical-design study using GSCLIB045 45 nm. The repository name reflects a longer-term CNN goal; convolution scheduling, requantization, and complete CNN inference remain future work.
 
 ## Architecture
-At each accepted step k, the array receives A[0:3][k] and B[k][0:3]. Each MAC updates C[i][j] with A[i][k]*B[k][j]. All 16 partial sums stay in their own registers.
 
-The controller sequence is IDLE -> CLEAR -> COMPUTE -> IDLE. An operand set is accepted on a rising edge when in_valid && in_ready. In `matmul_4x4_k`, the Kth accepted set completes the job and asserts done for one clock. K is captured on an idle start; K=0 requests are ignored. Input gaps stall computation. start must be pulsed while idle; requests while busy are ignored. Reset is synchronous active-low. Arithmetic overflow wraps rather than saturates.
+`accel_top` connects a 256x64-bit behavioral operand memory, a valid/ready memory reader, and 16 signed INT8 MACs with 32-bit accumulators. Each input word packs `{B3, B2, B1, B0, A3, A2, A1, A0}`. The configurable controller accumulates K=1-255 operand sets. Memory is implemented in standard cells, not an SRAM macro. An optional pipelined MAC registers the product before accumulation.
 
-## Repository organization
-- rtl/: original synthesizable design files imported from the university machine
-- tb/: original self-checking testbenches
-- docs/: architecture decisions, learning notes, roadmap
-- reports/: milestone reports and curated evidence
-- scripts/: reproducible run commands
-- constraints/: timing constraints for the academic flow
-- runs/: generated local output, excluded from Git
+## Recorded results
 
-## Reproduce
-Load the university-supported Cadence environment first. See scripts/run_commands.tcsh for commands to run in that configured tcsh session. The source files listed in docs/import-and-git.md are required.
+Results below belong to distinct runs. Reports were produced on the university Cadence installation and imported from the October 2 archive; no EDA tools were rerun during this update.
 
-## Planned work
-1. Preserve the verified baseline (source import complete).
-2. Generalize accumulation length K (implemented; directed simulation passed).
-3. Integrate synchronous operand memory and a reader (memory and reader tested together; compute integration pending).
-4. Add convolution scheduling and integer postprocessing.
-5. Validate a small CNN against an independent integer reference.
-6. Synthesize, implement, and analyze the design in Cadence (initial runs documented; timing closure pending).
-7. Compare controlled physical-design experiments (clock sweep in progress).
+| Implementation / check | Recorded result |
+|---|---|
+| Baseline RTL | MAC: 132,084 checks; array: 103 matrix tests; configurable K: 11 completed jobs |
+| Integrated baseline | Identity and non-identity accumulation tests: 16 result checks each |
+| Earlier clock-gated 100 MHz implementation | 38,575 instances reported by power analysis; 262 inserted clock-gating instances |
+| Earlier implementation, Conformal | RTL-to-synthesis and synthesis-to-PnR: 17,568 equivalent compare points each |
+| Earlier baseline to clock-gated implementation | Estimated power 6.075 -> 2.252 mW; die area 399,050.008 -> 237,543.966 um2 |
+| Earlier implementation, static rail analysis | Approximately 0.370 mV VDD drop at nominal 0.9 V; VSS rise approximately 0.375 mV |
+| Pipelined synthesis, 2.00 ns target | Reported synthesis WNS 0.0 ps |
+| Pipelined routed run `p2.0_pipe_v5`, 500 MHz | Tempus worst reported setup **+0.001 ns**, hold **+0.004 ns** |
+| Same v5 run, Innovus checks | Zero reported DRC, connectivity, and process-antenna violations |
 
-Compatible physical SRAM macros are not confirmed. Behavioral memory does not establish a physical SRAM implementation. Memory-placement experiments remain conditional on compatible macro views.
+The v5 result supersedes the earlier v3 result (-2 ps setup / -7 ps hold). Its path reports show positive slack with propagated clocks and SI/OCV/CPPR enabled. **Constraint coverage still reports 168 no-drive and 556 unconstrained-endpoint warnings.** These require review before claiming complete timing signoff. The earlier LEC and rail results are not proof of equivalence or rail integrity for the final pipelined variant.
 
-## Reporting policy
-Every milestone records the problem, algorithm, interface, design decisions, verification, commands, tool version, result provenance, bugs, and limitations. Record a source commit SHA for each new run. Keep measured results separate from targets and estimates.
+See the [physical-design report](reports/08-physical-design-clock-sweep.md) for run-by-run evidence, [PPA comparison](reports/09-clock-gating-ppa.md) for measurement assumptions, and [evidence index](reports/evidence/physical/README.md) for source files.
 
-Do not commit proprietary PDK/library files, university environment scripts or license settings, tool executables, generated databases, or unreviewed terminal histories. No redistribution license is selected in this starter package.
+## Engineering work
+
+- Built the signed MAC array, configurable accumulation controller, operand memory, and reader; added self-checking block and integration tests.
+- Inserted clock gating and evaluated the resulting hold-repair, area, and estimated-power changes.
+- Automated clock-period sweeps and added a product pipeline stage to explore the timing/area tradeoff.
+- Implemented selected designs through placement, CTS, routing, extraction, and Tempus analysis.
+- Preserved failing and improved timing results rather than mixing metrics from different variants.
+
+## Repository map
+
+- `rtl/`, `tb/`: supplied RTL and self-checking testbenches.
+- `scripts/`: simulation commands, synthesis, PnR, STA, LEC, and sweep scripts.
+- `constraints/`: initial SDC and the earlier implementation's MMMC template.
+- `reports/`: milestone reports, physical-design analysis, and curated tool evidence.
+- `docs/`: reproduction guidance and roadmap.
+- `runs/`: generated local output, excluded from Git.
+
+## Reproduction and scope
+
+Start with [reproduction notes](docs/reproduce-physical.md). Cadence tools and licensed library views must be available separately. The imported scripts contain university-specific paths and require a locally prepared LEF; they are not a portable turnkey flow.
+
+The archive includes uncommitted source changes. The [import manifest](reports/evidence/physical/manifest-2026-10-02.json) records source and evidence hashes, but hashes alone do not establish which RTL revision generated a historical report. Final pipelined functional-regression and LEC evidence remain to be added. No fabricated-silicon, FPGA speedup, or CNN-accuracy result is claimed.

@@ -18,6 +18,7 @@ set util [expr {[info exists ::env(UTIL)] ? $::env(UTIL) : 0.60}]
 set pipe [expr {[info exists ::env(PIPE)] ? $::env(PIPE) : 0}]
 set cg   [expr {[info exists ::env(CG)]   ? $::env(CG)   : 1}]
 set margin [expr {[info exists ::env(MARGIN)] ? $::env(MARGIN) : 0.03}]
+set hmargin [expr {[info exists ::env(HOLD_MARGIN)] ? $::env(HOLD_MARGIN) : 0.0}]
 set syn  $root/runs/sweep/p$P[expr {$pipe ? "_pipe" : ""}][expr {$cg ? "" : "_nocg"}]
 set out  [pwd]
 file mkdir rpt out
@@ -72,7 +73,7 @@ ccopt_design -cts
 timeDesign -postCTS -outDir rpt/03_postCTS
 
 # ---- post-CTS: setup, then hold with DLY cells only (setup may not degrade), then DRV
-setOptMode -setupTargetSlack $margin
+setOptMode -setupTargetSlack $margin -holdTargetSlack $hmargin
 optDesign -postCTS -outDir rpt/04_postCTS_setup
 setOptMode -holdFixingCells [dbGet -u head.libCells.name DLY*] -fixHoldAllowSetupTnsDegrade false
 optDesign -postCTS -hold -outDir rpt/04_postCTS_hold

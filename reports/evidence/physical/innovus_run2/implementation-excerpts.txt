@@ -1,0 +1,64 @@
+EXCERPTS from runs/innovus_run2/innovus.log
+Original SHA-256: c7734c33ebe4269380b3af6d081852c24ff8e9528bf9a830bb061a621f4367af
+Original line numbers follow. Omitted intervals are not shown.
+
+[...]
+250: *** Message Summary: 0 warning(s), 0 error(s)
+251: 
+252: <CMD> floorPlan -site CoreSite -r 1.0 0.60 10 10 10 10
+253: **WARN: (IMPFP-3961):	The techSite 'CornerSite' has no related standard cells in the LEF/OA library. The calculations for this site type cannot be made unless standard cell models of this type exist in the LEF/OA library. Ignore this warning if the SITE is not used by the library. Alternatively, remove the SITE definition for the LEF/OA library to avoid this message.
+254: Type 'man IMPFP-3961' for more detail.
+[...]
+387: Design Name: accel_top
+388: Database Units: 2000
+389: Design Boundary: (0.0000, 0.0000) (487.8000, 486.9700)
+390: Error Limit = 100000; Warning Limit = 50
+391: Check specified nets
+[...]
+5482: 
+5483: *info:
+5484: *info: Added a total of 64 cells to fix/reduce hold violation
+5485: *info:
+5486: *info: Summary: 
+[...]
+6496: #Reporting timing...
+6497: **WARN: (GLOBAL-100):	Global 'timing_report_backward_compatible_max_paths_reporting' has become obsolete. It will be removed in the next release.
+6498: #Normalized TNS: 0.000 -> 0.000, r2r 0.000 -> 0.000, unit 1000.000, clk period 10.000 (ns)
+6499: #Stage 1: cpu time = 00:00:04, elapsed time = 00:00:01, memory = 2456.52 (MB), peak = 2915.58 (MB)
+6500: #Library Standard Delay: 41.70ps
+[...]
+7050: #Reporting timing...
+7051: **WARN: (GLOBAL-100):	Global 'timing_report_backward_compatible_max_paths_reporting' has become obsolete. It will be removed in the next release.
+7052: #Normalized TNS: 0.000 -> 0.000, r2r 0.000 -> 0.000, unit 1000.000, clk period 10.000 (ns)
+7053: #Stage 1: cpu time = 00:00:06, elapsed time = 00:00:02, memory = 2802.04 (MB), peak = 2977.68 (MB)
+7054: #Library Standard Delay: 41.70ps
+[...]
+8234: 
+8235: *info:
+8236: *info: Added a total of 281 cells to fix/reduce hold violation
+8237: *info:
+8238: *info: Summary: 
+[...]
+10967: 
+10968: *info:
+10969: *info: Added a total of 17 cells to fix/reduce hold violation
+10970: *info:
+10971: *info: Summary: 
+[...]
+11929: Design Name: accel_top
+11930: Database Units: 2000
+11931: Design Boundary: (0.0000, 0.0000) (487.8000, 486.9700)
+11932: Error Limit = 1000; Warning Limit = 50
+11933: Check all nets
+[...]
+12528: Printing D_NET...
+12529: RC Out from RCDB Completed (CPU Time= 0:00:00.7  MEM= 5155.0M)
+12530: <CMD> streamOut out/accel_top_run2.gds -merge /opt/eda/cadence/local/gsclib045_all/lan/flow/t1u1/reference_libs/GPDK045/gsclib045_all_v4.4/gsclib045/gds/gsclib045.gds -units 2000 -mode ALL
+12531: Merge file: /opt/eda/cadence/local/gsclib045_all/lan/flow/t1u1/reference_libs/GPDK045/gsclib045_all_v4.4/gsclib045/gds/gsclib045.gds has version number: 5
+12532: Parse flat map file...
+[...]
+12782: 
+12783: 
+12784: Stream Out Information Processed for GDS version 5:
+12785: Units: 2000 DBU
+12786: 

@@ -1,0 +1,40 @@
+EXCERPTS from runs/tempus_sweep/p2.0_pipe_v5/tempus.log
+Original SHA-256: a05825f338dea1a73d2170b2f1c8e781c40e567e274e8b5b5621d757ff7cb720
+Original line numbers follow. Omitted intervals are not shown.
+
+[...]
+18: #@ Processing -files option
+19: Sourcing tcl/tk file '/home/tumberpl/int8-cnn-accelerator/scripts/sweep/sta_sweep_tempus.tcl' ...
+20: <CMD> read_view_definition /home/tumberpl/int8-cnn-accelerator/runs/pnr_sweep/p2.0_pipe_v5/mmmc_p2.0.tcl
+21: <CMD> read_verilog /home/tumberpl/int8-cnn-accelerator/runs/pnr_sweep/p2.0_pipe_v5/out/accel_top_p2.0.v
+22: <CMD> set_top_module accel_top
+23: #% Begin Load MMMC data ... (date=09/29 16:59:56, mem=846.6M)
+[...]
+122: #% Begin Load MMMC data post ... (date=09/29 16:59:57, mem=1587.6M)
+123: #% End Load MMMC data post ... (date=09/29 16:59:57, total cpu=0:00:00.0, real=0:00:00.0, peak res=1587.6M, current mem=1587.6M)
+124: <CMD> set_analysis_view -setup {setup_view} -hold {hold_view}
+125: Number of views requested 1 are allowed with the current licenses... continuing with set_analysis_view.
+126: /home/tumberpl/int8-cnn-accelerator/runs/sweep/p2.0_pipe/accel_top_p2.0.sdc
+[...]
+177: List of identified unusable delay cells:
+178: Total number of identified unusable delay cells: 0
+179: <CMD> read_spef -rc_corner rc_125 /home/tumberpl/int8-cnn-accelerator/runs/pnr_sweep/p2.0_pipe_v5/out/accel_top_p2.0_rc125.spef
+180: <CMD> read_spef -rc_corner rc_0 /home/tumberpl/int8-cnn-accelerator/runs/pnr_sweep/p2.0_pipe_v5/out/accel_top_p2.0_rc0.spef
+181: 
+182: SPEF files for RC Corner rc_125:
+[...]
+199: 14 nets are missing in SPEF file. The names of these nets are saved in ./rc_125.missing_nets.rpt.
+200: 14 nets are missing in SPEF file. The names of these nets are saved in ./rc_0.missing_nets.rpt.
+201: <CMD> set_design_mode -process 45
+202: ##  Process: 45            (User Set)               
+203: ##     Node: (not set)                           
+[...]
+208: <CMD> all_constraint_modes
+209: functional
+210: <CMD> set_interactive_constraint_modes [all_constraint_modes]
+211: <CMD> set_propagated_clock [all_clocks]
+212: <CMD> set_interactive_constraint_modes {}
+213: <CMD> set_analysis_mode -analysisType onChipVariation -cppr both
+214: <CMD> set_delay_cal_mode -siAware true
+215: AAE_INFO: switching -siAware from false to true ...
+216: AAE_INFO: The setting is changed from false to true in setDelayCalMode -SIAware

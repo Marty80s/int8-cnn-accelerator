@@ -1,0 +1,16 @@
+EXCERPTS from runs/innovus_sitefix/rpt/09_summary.rpt
+Original SHA-256: f361dcccfd6e3370dd67015d221742f869a359d3d134e5ca6f95099c9a831f06
+Original line numbers follow. Omitted intervals are not shown.
+
+[...]
+6110: Floorplan/Placement Information
+6111: ==============================
+6112: Total area of Standard cells: 374096.016 um^2  
+6113: Total area of Standard cells(Subtracting Physical Cells): 224073.612 um^2  
+6114: Total area of Macros: 0.000 um^2  
+6115: Total area of Blockages: 0.000 um^2  
+6116: Total area of Pad cells: 0.000 um^2  
+6117: Total area of Core: 374096.016 um^2  
+6118: Total area of Chip: 399050.008 um^2  
+6119: Effective Utilization: 1.0000e+00  
+6120: Number of Cell Rows: 357  

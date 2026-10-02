@@ -1,19 +1,12 @@
-# Milestones and acceptance criteria
+# Remaining work
 
-| Stage | Work | Acceptance evidence |
-|---|---|---|
-| 00 | Environment and baseline import | Exact saved source files, documented tool versions, baseline run |
-| 01 | Single MAC | Signed products, reset/clear priority, hold, randomized arithmetic, overflow |
-| 02 | 4x4 array | All output elements match independent matrix reference |
-| 03 | Controller | Input stalls, completion pulse, ignored busy start, repeated jobs, reset recovery |
-| 04 | Configurable K | Capture K on start, define K=0 behavior, K=1 and maximum, stall handling |
-| 05 | Memory-fed compute | Defined packing, synchronous latency, addresses, stale-data prevention |
-| 06 | Convolution and quantization | Independent software reference; documented rounding and saturation |
-| 07 | Small CNN | Layer-by-layer exact integer checks and held-out classification accuracy |
-| 08 | Synthesis | Reviewed constraints, mapped netlist, area and timing; no unexplained latches |
-| 09 | Physical implementation | Legal placement, clock tree, routing, extracted STA, documented remaining violations |
-| 10 | Experiments | Common baseline/settings; comparable measurements and justified conclusions |
+The integrated memory-fed matrix engine and initial physical-design study are implemented. The latest archived pipeline run reports +1 ps setup and +4 ps hold at a 500 MHz target in its configured Tempus views.
 
-No board deployment is planned. Full physical SRAM integration depends on obtaining compatible Liberty, LEF, functional models and required physical views. Extraction data and layer-stack compatibility also need validation.
+1. Review and resolve or justify all timing-coverage and SPEF-annotation warnings for that run.
+2. Save a functional regression and LEC results for the final pipelined variant, tied to an exact source commit and build configuration.
+3. Make the environment-specific flow easier to reproduce, with explicit dependency preparation and run parameters.
+4. Repeat controlled PPA experiments with common utilization and workload-derived activity, separating clock gating, pipelining, and floorplan effects.
+5. Add convolution scheduling, quantization/requantization, and an independent integer reference before claiming complete CNN inference.
+6. Evaluate SRAM integration only if compatible macro timing, physical, and functional views become available.
 
-Study each milestone before expanding it: arithmetic example -> cycle trace -> RTL -> test -> report.
+Existing results concern an academic 45 nm standard-cell implementation. No board deployment or fabricated-silicon result is claimed.

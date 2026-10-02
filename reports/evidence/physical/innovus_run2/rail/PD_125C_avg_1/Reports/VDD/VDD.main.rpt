@@ -1,0 +1,101 @@
+POWER NET REPORT 
+Generated Date: Sun Sep 27 01:52:14 2026
+Host Name: ece-rh810-16
+
+
+==============================
+POWER NET 
+==============================
+Power Net: VDD
+Voltage: 0.900
+Threshold: 0.855
+
+
+==============================
+POWER-GRID VIEW
+==============================
+Power-Grid Views Used: 106
+
+
+==============================
+POWER-GRID ATTRIBUTES
+==============================
+Total Resistor Elements: 105780
+    Please refer to ../VDD/grid.gif for more details
+Top-level Resistor Elements:105780
+Cell Library Resistor Elements: 0
+Total Number of Current Taps: 82259
+    Please refer to ../VDD/tc.gif for more details
+
+
+==============================
+IR DROP ANALYSIS
+==============================
+Layer based IR Drop Report: See Report
+Minimum, Average, Maximum IR drop: 0.900V 0.900V 0.900V
+    Please refer to ../VDD/ir_linear.gif for more details
+Total Static Current Loaded: -0.0025031310360645875A
+Number of Violations: 0
+    Please refer to ../VDD/ir_limit.gif for more details
+Minimum, Average, Maximum Vsrc Current: -9.697797941043973e-05A, -5.2148563251345571e-05A, -3.3884007279993966e-05A
+
+
+==============================
+EFFECTIVE RESISTANCE ANALYSIS
+==============================
+Minimum, Average, Maximum Reff: NA, NA, NA
+
+
+==============================
+CURRENT DENSITY ANALYSIS
+==============================
+Minimum, Average, Maximum J/Jmax:
+Number of Violations: 0
+    Please refer to ./rail/PD_125C_avg_1/Reports/VDD/rj.gif for more details
+
+
+==============================
+POWER SWITCH ANALYSIS
+==============================
+PowerGate Current I/Idsat violations: 
+    Please refer to ./rail/PD_125C_avg_1/Reports/VDD/pi.gif for more details
+Minimum, Average, Maximum I/Idsat (pi): NA, NA, NA
+Minimum, Average, Maximum IRdrop Across PowerGate (pv): 0, 0, 0
+Power Switch ECO file for Soc Encounter: 
+
+
+==============================
+PACKAGE ANALYSIS
+==============================
+Voltage Drop Across Package (vu): NA, NA, NA
+
+
+==============================
+CAPACITANCE ANALYSIS
+==============================
+Decap Optimization method: area  
+Total Coupling Capacitance: NA
+    Please refer to ../VDD/dd.gif for more details
+Grid Coupling Capacitance: NA
+Gate Coupling Capacitance (internal): NA
+Loading Coupling Capacitance: NA
+Capacitance Offered by Placed Decaps: NA
+Additional Capacitance Required: 0.000F
+    Please refer to ../VDD/dr.gif for more details
+Total Feasible Capacitance: 0.000F
+Total Leakage Current of Placed Decaps: 0.000A
+Total Leakage Current of ECO Decaps: 0.000A
+What-if ECO File:   
+SoC Encounter ECO File: ./rail/PD_125C_avg_1//VDD/vs2fe_eco.tcl 
+
+
+==============================
+ADDITIONAL FILES
+==============================
+Instance Voltage File: ./rail/PD_125C_avg_1/Reports/VDD/VDD.iv
+Dynamic IR drop Waveform File (dynamic): 
+Effective Instance Voltage File (dynamic): 
+
+Summary: ./rail/PD_125C_avg_1//VDD/results 
+
+

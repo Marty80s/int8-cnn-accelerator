@@ -1,0 +1,87 @@
+xrun(64): 23.09-s012: (c) Copyright 1995-2024 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	23.09-s012: Started on Sep 24, 2026 at 21:41:04 EDT
+xrun
+	-64bit
+	-sv
+	../../rtl/mac_int8.sv
+	../../rtl/mac_array_4x4.sv
+	../../rtl/matmul_4x4_k.sv
+	../../rtl/operand_memory.sv
+	../../rtl/operand_reader.sv
+	../../rtl/accel_top.sv
+	../../tb/tb_accel_top_accum.sv
+	-top tb_accel_top_accum
+	-l top_accum_scalar.log
+file: ../../rtl/mac_int8.sv
+	module worklib.mac_int8:sv
+		errors: 0, warnings: 0
+file: ../../rtl/mac_array_4x4.sv
+	module worklib.mac_array_4x4:sv
+		errors: 0, warnings: 0
+file: ../../rtl/matmul_4x4_k.sv
+	module worklib.matmul_4x4_k:sv
+		errors: 0, warnings: 0
+file: ../../rtl/operand_memory.sv
+	module worklib.operand_memory:sv
+		errors: 0, warnings: 0
+file: ../../rtl/operand_reader.sv
+	module worklib.operand_reader:sv
+		errors: 0, warnings: 0
+file: ../../rtl/accel_top.sv
+	module worklib.accel_top:sv
+		errors: 0, warnings: 0
+file: ../../tb/tb_accel_top_accum.sv
+	module worklib.tb_accel_top_accum:sv
+		errors: 0, warnings: 0
+	Elaborating the design hierarchy:
+		Caching library 'worklib' ....... Done
+	Top level design units:
+		tb_accel_top_accum
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.mac_int8:sv <0x57125e95>
+			streams:   3, words:   784
+		worklib.matmul_4x4_k:sv <0x2cca1103>
+			streams:  11, words:  5196
+		worklib.operand_reader:sv <0x30622fca>
+			streams:  10, words:  3856
+		worklib.operand_memory:sv <0x2352360d>
+			streams:   5, words:  1983
+		worklib.tb_accel_top_accum:sv <0x57119f47>
+			streams:  14, words: 28609
+		worklib.mac_array_4x4:sv <0x2d320ece>
+			streams:   2, words:   307
+		worklib.accel_top:sv <0x48478071>
+			streams:   5, words:  3311
+	Building instance specific data structures.
+	Loading native compiled code:     .................... Done
+	Design hierarchy summary:
+		                 Instances  Unique
+		Modules:                22       7
+		Registers:              82      52
+		Scalar wires:           24       -
+		Expanded wires:        128      10
+		Vectored wires:         73       -
+		Always blocks:          21       6
+		Initial blocks:         10      10
+		Cont. assignments:      30      15
+		Pseudo assignments:     40       -
+		Process Clocks:         20       1
+		Simulation timescale:  1ps
+	Writing initial simulation snapshot: worklib.tb_accel_top_accum:sv
+Loading snapshot worklib.tb_accel_top_accum:sv .................... Done
+xcelium> source /opt/eda/cadence/XCELIUM2309/tools/xcelium/files/xmsimrc
+xcelium> run
+Loaded address 0: 04030201fbff0501
+Loaded address 1: 05040302fafe0602
+Loaded address 2: 06050403f9fd0703
+Loaded address 3: 07060504f8fc0804
+Result row 0: 30 40 50 60
+Result row 1: 70 96 122 148
+Result row 2: -30 -40 -50 -60
+Result row 3: -70 -96 -122 -148
+PASS: accel_top accumulation test, 16 result checks
+Simulation complete via $finish(1) at time 266 NS + 0
+/home/tumberpl/int8-cnn-accelerator/tb/tb_accel_top_accum.sv:224         $finish;
+xcelium> exit
+TOOL:	xrun(64)	23.09-s012: Exiting on Sep 24, 2026 at 21:41:07 EDT  (total: 00:00:03)
